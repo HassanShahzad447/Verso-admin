@@ -1,0 +1,50 @@
+.dashboard-container {
+    padding: 20px;
+  }
+  
+  .blogs-table-container {
+    margin-top: 20px;
+  }
+  
+  .blogs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .blogs-table th, .blogs-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .blogs-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .view-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .view-button:hover {
+    background-color: #45a049;
+  }
+  
+  .pagination {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+  }
+
+  .style-data h1{
+    font-weight: 'bold' !important;  
+    font-size: '16px' !important; 
+    text-align: 'center' !important; 
+  }
+
+  
