@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000'; 
+const API_URL = process.env.REACT_APP_BackendURL; 
 
 export const signUp = async (userData) => {
     const response = await fetch(`${API_URL}/api/users/signup`, { // Updated endpoint

@@ -38,9 +38,9 @@ export default function SideBar() {
                     </Link>
                 </li>
                 <li className="sidebar-item">
-                <Link to="/Category"  className="sidebar-link">
+                <Link to="/skills"  className="sidebar-link">
                         <i className="lni lni-popup"></i>
-                        <span className='link-text' >Category</span>
+                        <span className='link-text' >Requirments</span>
                     </Link>
                 </li>
                 <li className="sidebar-item">
@@ -94,7 +94,7 @@ export default function SideBar() {
                 <li className="sidebar-item">
                 <Link to="/leads"  className="sidebar-link">
                         <i className="lni lni-popup"></i>
-                        <span className='link-text' >Leads</span>
+                        <span className='link-text' >Add Admin</span>
                     </Link>
                 </li>
                 <li className="sidebar-item">

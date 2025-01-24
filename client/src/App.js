@@ -6,6 +6,8 @@ import AddAdmin from './pages/Auth/AddAdmin';
 import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import Category from './pages/Category/Category';
+import AddJob from './pages/Jobs/AddJob';
 
 const App = () => {
     return (
@@ -26,6 +28,27 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/skills"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Category />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/job"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AddJob />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
             </Routes>
         </Router>
     );
