@@ -73,7 +73,7 @@ const createJobApplication = async (req, res) => {
 // Get all job applications
 const getAllApplications = async (req, res) => {
   try {
-    const applications = await JobApplication.find();
+    const applications = await JobApplication.find().sort({ createdAt: 1 }); // Sort by createdAt in ascending order
     res.status(200).json({ data: applications });
   } catch (error) {
     console.error(error);

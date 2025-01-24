@@ -91,6 +91,13 @@ export default function SideBar() {
                         </li>
                     </ul>
                 </li> */}
+
+            <li className="sidebar-item">
+                <Link to="/ApplicationList"  className="sidebar-link">
+                        <i className="lni lni-book"></i>
+                        <span className='link-text' >ApplicationList</span>
+                    </Link>
+                </li>
                 
                 <li className="sidebar-item">
                 <Link to="/consent"  className="sidebar-link">

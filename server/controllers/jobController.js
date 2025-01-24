@@ -11,15 +11,15 @@ const createJobPosting = async (req, res) => {
   }
 };
 
-// Get all job postings
 const getAllJobPostings = async (req, res) => {
   try {
-    const jobs = await JobPosting.find();
+    const jobs = await JobPosting.find().sort({ createdAt: 1 }); // 1 for ascending
     res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Get a single job posting by ID
 const getJobPostingById = async (req, res) => {

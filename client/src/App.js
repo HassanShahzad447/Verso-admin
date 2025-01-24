@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Category from './pages/Category/Category';
 import AddJob from './pages/Jobs/AddJob';
 import JobList from'./pages/Jobs/JobList';
+import ApplicationList from './pages/Applications/ApplicationList';
 
 const App = () => {
     return (
@@ -55,6 +56,16 @@ const App = () => {
             <ProtectedRoute>
               <DashboardLayout>
                 <JobList />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ApplicationList"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ApplicationList />
               </DashboardLayout>
             </ProtectedRoute>
           }
