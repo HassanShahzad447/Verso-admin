@@ -8,6 +8,7 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Category from './pages/Category/Category';
 import AddJob from './pages/Jobs/AddJob';
+import JobList from'./pages/Jobs/JobList';
 
 const App = () => {
     return (
@@ -44,6 +45,16 @@ const App = () => {
             <ProtectedRoute>
               <DashboardLayout>
                 <AddJob />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/joblist"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <JobList />
               </DashboardLayout>
             </ProtectedRoute>
           }

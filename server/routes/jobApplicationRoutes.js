@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const {
   createJobApplication,
@@ -8,7 +9,11 @@ const {
   deleteJobApplication,
 } = require('../controllers/jobApplicationController');
 
-router.post('/', createJobApplication);
+// Set up multer for file uploads
+const storage = multer.memoryStorage(); // Store file in memory buffer
+const upload = multer({ storage: storage });
+
+router.post('/', upload.single('cv'), createJobApplication);
 
 router.get('/', getAllApplications);
 

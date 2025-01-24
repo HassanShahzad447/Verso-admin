@@ -37,21 +37,21 @@ export default function SideBar() {
                         <span className='link-text'>Dashboard</span>
                     </Link>
                 </li>
+               
+                <li className="sidebar-item">
+                <Link to="/joblist"  className="sidebar-link">
+                        <i className="lni lni-agenda"></i>
+                        <span className='link-text'>Job</span>
+                    </Link>
+                </li>
+
+
                 <li className="sidebar-item">
                 <Link to="/skills"  className="sidebar-link">
                         <i className="lni lni-popup"></i>
                         <span className='link-text' >Requirments</span>
                     </Link>
                 </li>
-                <li className="sidebar-item">
-                <Link to="/dashboard"  className="sidebar-link">
-                        <i className="lni lni-agenda"></i>
-                        <span className='link-text'>Blogs</span>
-                    </Link>
-                </li>
-
-
-
 
                 {/* <li className="sidebar-item">
                     <a href="#" className="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
@@ -91,16 +91,11 @@ export default function SideBar() {
                         </li>
                     </ul>
                 </li> */}
-                <li className="sidebar-item">
-                <Link to="/leads"  className="sidebar-link">
-                        <i className="lni lni-popup"></i>
-                        <span className='link-text' >Add Admin</span>
-                    </Link>
-                </li>
+                
                 <li className="sidebar-item">
                 <Link to="/consent"  className="sidebar-link">
                         <i className="lni lni-files"></i>
-                        <span className='link-text' >Consent</span>
+                        <span className='link-text' >Add Admin</span>
                     </Link>
                 </li>
                 <li className="sidebar-item">
