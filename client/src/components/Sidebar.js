@@ -100,7 +100,7 @@ export default function SideBar() {
                 </li>
                 
                 <li className="sidebar-item">
-                <Link to="/consent"  className="sidebar-link">
+                <Link to="/admin"  className="sidebar-link">
                         <i className="lni lni-files"></i>
                         <span className='link-text' >Add Admin</span>
                     </Link>

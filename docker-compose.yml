@@ -1,0 +1,45 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      # Add other environment variables as needed
+      # - DATABASE_URL=mongodb://db:27017/myapp
+    networks:
+      - app-network
+    # If you need a database, uncomment these lines
+    # depends_on:
+    #   - db
+
+  # If you need a database, uncomment this service
+  # db:
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - dbdata:/data/db
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# If you need persistent storage, uncomment this
+# volumes:
+#   dbdata: 

@@ -22,7 +22,7 @@ export const signIn = async (userData) => {
     return await response.json();
 };
 
-export const addAdmin = async (adminData, token) => {
+export const Admin = async (adminData, token) => {
     const response = await fetch(`${API_URL}/api/users/add-admin`, { // Updated endpoint
         method: 'POST',
         headers: {
