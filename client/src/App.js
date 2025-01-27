@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Signup from './pages/Auth/SignUp';
 import Login from './pages/Auth/SignIn';
-import AddAdmin from './pages/Auth/AddAdmin';
 import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -10,6 +9,7 @@ import Category from './pages/Category/Category';
 import AddJob from './pages/Jobs/AddJob';
 import JobList from'./pages/Jobs/JobList';
 import ApplicationList from './pages/Applications/ApplicationList';
+import AddAdmin from './pages/Auth/AddAdmin';
 
 const App = () => {
     return (
@@ -66,6 +66,16 @@ const App = () => {
             <ProtectedRoute>
               <DashboardLayout>
                 <ApplicationList />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AddAdmin />
               </DashboardLayout>
             </ProtectedRoute>
           }
