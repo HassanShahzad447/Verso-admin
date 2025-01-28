@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { postJob } from '../../services/jobService';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getJobById, updateJob } from '../../services/jobService'; 
 import { getCategories } from '../../services/categoryService';
 import Select from 'react-select';
 import ReactQuill from 'react-quill';
@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const AddJob = () => {
+const UpdateJob = () => {
     const [jobData, setJobData] = useState({
         title: '',
         description: '',
@@ -19,16 +19,83 @@ const AddJob = () => {
     });
     const [categories, setCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
-
+    const { jobId } = useParams(); // To get jobId from the URL
     const navigate = useNavigate();
+
+    // Fetch job data when the component mounts or jobId changes
+    useEffect(() => {
+        const fetchJobData = async () => {
+            try {
+                const jobResponse = await getJobById(jobId);
+                console.log(jobResponse); // Log the response for debugging
+                
+                if (jobResponse && jobResponse._id) {
+                    const { title, description, location, salaryRange, skillsRequirement = [], lastDateToApply } = jobResponse;
+                    const formattedDate = lastDateToApply ? new Date(lastDateToApply).toISOString().split('T')[0] : '';
+                    
+                    setJobData({
+                        title,
+                        description,
+                        location,
+                        salaryRange,
+                        skillsRequirement,
+                        lastDateToApply: formattedDate
+                    });
+                    setSelectedCategories(
+                        skillsRequirement.map(skill => ({ label: skill, value: skill }))
+                    );
+                } else {
+                    alert('Error fetching job data');
+                }
+            } catch (error) {
+                console.error("Error fetching job:", error);
+                alert("An error occurred while fetching job details.");
+            }
+        };
+        fetchJobData();
+    }, [jobId]);
+    
+
+    // Fetch categories for the Select input
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const categoriesData = await getCategories();
+                if (categoriesData.success) {
+                    setCategories(
+                        categoriesData.categories.map(category => ({
+                            value: category._id,
+                            label: category.name
+                        }))
+                    );
+                } else {
+                    alert(categoriesData.message || "Error fetching categories");
+                }
+            } catch (error) {
+                alert("An error occurred while fetching categories.");
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setJobData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
+    
+        if (name === 'lastDateToApply') {
+            const formattedDate = new Date(value).toISOString().split('T')[0];
+            setJobData(prevData => ({
+                ...prevData,
+                [name]: formattedDate
+            }));
+        } else {
+            setJobData(prevData => ({
+                ...prevData,
+                [name]: value
+            }));
+        }
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,50 +105,28 @@ const AddJob = () => {
                 ...jobData,
                 skillsRequirement: skills,
             };
-            const result = await postJob(formattedJobData);
+            const result = await updateJob(jobId, formattedJobData);
             console.log(result);
-            // Show success toast
-            toast.success('Job posted successfully!');
+            toast.success('Job updated successfully!', {
+                autoClose: 3000,  // Adjust timeout for toast
+            });
             setTimeout(() => {
-                navigate('/joblist');
-            }, 2000);
+                navigate('/joblist');  // Redirect after toast timeout
+            }, 3000);  // Match timeout duration for smooth transition
         } catch (error) {
             console.error(error);
-            // Show error toast
-            toast.error('Error posting job. Please try again.');
+            toast.error('Error updating job. Please try again.', {
+                autoClose: 3000,  // Adjust timeout for toast
+            });
         }
     };
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const categoriesData = await getCategories();
-                if (categoriesData.success) {
-                    setCategories(
-                        categoriesData.categories.map(category => ({
-                            value: category._id,
-                            label: category.name,
-                        }))
-                    );
-                } else {
-                    console.error("Error fetching categories:", categoriesData.message);
-                    alert(categoriesData.message || "Error fetching categories");
-                }
-            } catch (error) {
-                console.error("Error fetching categories:", error.message);
-                alert("An error occurred while fetching categories. Please try again.");
-            }
-        };
-
-        fetchCategories();
-    }, []);
 
     return (
         <div className="add-job-page">
             <div className="container py-5">
                 <div className="card shadow-lg">
                     <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">Create Job Posting</h5>
+                        <h5 className="mb-0">Update Job Posting</h5>
                         <a href="/joblist" className="btn btn-light">View All Jobs</a>
                     </div>
                     <div className="card-body">
@@ -94,6 +139,7 @@ const AddJob = () => {
                                     name="title"
                                     className="form-control"
                                     placeholder="Enter job title"
+                                    value={jobData.title}
                                     onChange={handleChange}
                                     required
                                 />
@@ -143,6 +189,7 @@ const AddJob = () => {
                                     name="salaryRange.min"
                                     className="form-control"
                                     placeholder="Enter minimum salary"
+                                    value={jobData.salaryRange.min}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -154,10 +201,11 @@ const AddJob = () => {
                                     name="salaryRange.max"
                                     className="form-control"
                                     placeholder="Enter maximum salary"
+                                    value={jobData.salaryRange.max}
                                     onChange={handleChange}
                                 />
                             </div>
-                
+
                             <div className="col-md-6">
                                 <label htmlFor="inputLastDate" className="form-label">Last Date to Apply</label>
                                 <input
@@ -165,20 +213,21 @@ const AddJob = () => {
                                     id="inputLastDate"
                                     name="lastDateToApply"
                                     className="form-control"
+                                    value={jobData.lastDateToApply}
                                     onChange={handleChange}
                                 />
                             </div>
                             <div className="col-12 text-center">
-                                <button type="submit" className="btn btn-dark px-5">Post Job</button>
+                                <button type="submit" className="btn btn-dark px-5">Update Job</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-            <ToastContainer />
+            {/* Toast Container */}
+            <ToastContainer position="top-right" autoClose={5000} />
         </div>
     );
 };
 
-export default AddJob;
+export default UpdateJob;

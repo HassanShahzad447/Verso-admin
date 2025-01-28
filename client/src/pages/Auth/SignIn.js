@@ -16,14 +16,18 @@ const SignIn = () => {
         e.preventDefault();
         const response = await signIn(formData);
         if (response.token) {
+            // Store token, name, role, and id in localStorage
             localStorage.setItem('token', response.token);
             localStorage.setItem('name', response.user.name);
             localStorage.setItem('role', response.user.role);
+            localStorage.setItem('id', response.user.id);  // Store the user's id
+    
             navigate('/dashboard');
         } else {
             setError(response.message || 'An error occurred.');
         }
     };
+    
 
     return (
         <div className="login-page">
@@ -63,7 +67,7 @@ const SignIn = () => {
                         </div>
                         <div className="login-overlay-panel login-overlay-right">
                             <h1>Verso Admin!</h1>
-                            <p>Medivo: Your Trusted Partner in Medical Billing</p>
+                            <p>Verso: Versatile, dynamic, and full of personality.</p>
                         </div>
                     </div>
                 </div>
