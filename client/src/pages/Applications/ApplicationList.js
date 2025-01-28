@@ -11,24 +11,28 @@ const ApplicationList = () => {
 
     const fetchApplications = async () => {
         try {
-            const response = await fetch(`${backendURL}/api/job-applications`); // Updated to use backendURL
-            const result = await response.json();
-            if (result.data) {
-                setApplications(result.data);
-                setTotalPages(Math.ceil(result.data.length / limit)); // Update total pages based on fetched applications
-            } else {
-                toast.error('Failed to fetch applications');
-            }
+          const response = await fetch(`${backendURL}/api/job-applications`); 
+          const result = await response.json();
+      
+          if (result.data) {
+            
+            const sortedApplications = result.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+            setApplications(sortedApplications);
+            setTotalPages(Math.ceil(sortedApplications.length / limit)); 
+          } else {
+            toast.error('Failed to fetch applications');
+          }
         } catch (error) {
-            toast.error('Error fetching applications');
+          toast.error('Error fetching applications');
         }
-    };
+      };
+      
 
     useEffect(() => {
         fetchApplications();
     }, []);
 
-    // Calculate the applications to display based on the current page
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedApplications = applications.slice(startIndex, endIndex);

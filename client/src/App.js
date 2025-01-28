@@ -10,6 +10,8 @@ import AddJob from './pages/Jobs/AddJob';
 import JobList from'./pages/Jobs/JobList';
 import ApplicationList from './pages/Applications/ApplicationList';
 import AddAdmin from './pages/Auth/AddAdmin';
+import UpdateJob from'./pages/Jobs/UpdateJob';
+import Setting from './pages/Profile/Setting';
 
 const App = () => {
     return (
@@ -76,6 +78,28 @@ const App = () => {
             <ProtectedRoute>
               <DashboardLayout>
                 <AddAdmin />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+    <Route
+          path="/update/:jobId"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <UpdateJob />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
+<Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Setting />
               </DashboardLayout>
             </ProtectedRoute>
           }

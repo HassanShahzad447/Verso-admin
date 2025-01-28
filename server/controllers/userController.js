@@ -86,9 +86,12 @@ const signIn = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Include id, name, and role in the response
         res.status(200).json({ 
             token, 
             user: { 
+                id: user._id, // Add id to the user object
                 name: user.name,
                 role: user.role
             } 
@@ -98,5 +101,41 @@ const signIn = async (req, res) => {
     }
 };
 
+
+const updateUser = async (req, res) => {
+    const { id } = req.params; // Target user ID from the URL
+    const { name, email, password } = req.body;
+
+    try {
+        // Find the user to update
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update user details
+        if (name) user.name = name;
+        if (email) user.email = email;
+        if (password) {
+            const saltRounds = 10;
+            user.password = await bcrypt.hash(password, saltRounds);
+        }
+
+        const updatedUser = await user.save();
+
+        res.status(200).json({
+            message: 'User updated successfully',
+            user: {
+                name: updatedUser.name,
+                email: updatedUser.email,
+                role: updatedUser.role,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+  
+
 // Export functions
-module.exports = { addAdmin, getAllUsers, signUp, signIn };
+module.exports = { addAdmin, getAllUsers, signUp, signIn, updateUser };

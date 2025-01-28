@@ -16,29 +16,46 @@ const AddAdmin = () => {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
+        // Check if any field is empty
         if (!formData.name || !formData.email || !formData.password) {
             toast.warning('Please fill out all fields');
             return;
         }
 
-        const result = await Admin(formData, token);
+        try {
+            const result = await Admin(formData, token);
 
-        if (result.success) {
-            setFormData({ name: '', email: '', password: '', role: 'admin' });
-            toast.success('Admin added successfully');
-            
-            // Redirect to the dashboard after a short delay to show toast
-            setTimeout(() => {
-                navigate('/dashboard');
-            }, 2000);
-        } else {
-            toast.error(result.message);
+
+            // Check if the response contains _id (indicating success)
+            if (result._id) {
+                // Reset form on success
+                setFormData({ name: '', email: '', password: '', role: 'admin' });
+
+                // Show success toast
+                toast.success('Admin added successfully');
+
+                // Redirect to /dashboard after the toast
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 2000); // 2 seconds delay
+            } else {
+                // If there was an issue, show an error toast
+                toast.error('Failed to add admin. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error); // Log any error
+            toast.error('An error occurred. Please try again.');
         }
     };
 
+    
+    
+
     return (
         <div className="text-center">
+            {/* ToastContainer outside any conditional rendering */}
             <ToastContainer />
+
             <div className="p-4 pt-5">
                 <div className="card shadow">
                     <div className="card-header d-flex justify-content-between align-items-center">
@@ -82,7 +99,7 @@ const AddAdmin = () => {
                                     placeholder="Enter password"
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary w-100">Add Admin</button>
+                            <button type="submit" className="btn btn-dark w-100">Add Admin</button>
                         </form>
                     </div>
                 </div>
