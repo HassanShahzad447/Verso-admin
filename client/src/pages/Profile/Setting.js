@@ -1,70 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify'; // Corrected imports
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { updateUserDetails } from '../../services/authApi';
 
 const Setting = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); 
-  const backendURL = process.env.REACT_APP_BackendURL;
-  const userId = localStorage.getItem('id'); 
+  const userId = localStorage.getItem('id');
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await fetch(`${backendURL}/api/users/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // useEffect(() => {
+  //   const loadUserDetails = async () => {
+  //     try {
+  //       const user = await fetchUserDetails(userId);
+  //       setName(user.name);
+  //       setEmail(user.email);
+  //     } catch (error) {
+  //       toast.error('Failed to fetch user details');
+  //     }
+  //   };
 
-        if (response.ok) {
-          const result = await response.json();
-          setUser(result); 
-          setName(result.name); // Update here to set name
-          setEmail(result.email);
-        } else {
-          console.error('Failed to fetch user details:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching user details:', error);
-      }
-    };
+  //   loadUserDetails();
+  // }, [userId]);
 
-    fetchUserDetails();
-  }, [backendURL, userId]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleUpdate({ name, email, password });
-  };
-
-  const handleUpdate = async (updatedDetails) => {
-    const token = localStorage.getItem('token');
-
     try {
-      const response = await fetch(`${backendURL}/api/users/${userId}`, { 
-        method: 'PUT', 
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedDetails),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Update successful:', result);
-        toast.success('Profile updated successfully!'); // Success toast
-      } else {
-        console.error('Failed to update user:', response.statusText);
-        toast.error('Failed to update profile'); // Error toast
-      }
+      const updatedUser = { name, email, password };
+      await updateUserDetails(userId, updatedUser);
+      toast.success('Profile updated successfully!');
     } catch (error) {
-      console.error('Error updating user:', error);
-      toast.error('An error occurred while updating your profile.'); // Error toast
+      toast.error('Failed to update profile');
     }
   };
 
@@ -85,7 +51,7 @@ const Setting = () => {
                     className="form-control"
                     placeholder="Name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)} // Change here for name
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
                 <div className="col-sm-4">
@@ -108,7 +74,6 @@ const Setting = () => {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-
                 <div className="col-auto">
                   <button type="submit" className="btn btn-dark">Update</button>
                 </div>
@@ -117,8 +82,6 @@ const Setting = () => {
           </div>
         </div>
       </div>
-
-      {/* ToastContainer for showing notifications */}
       <ToastContainer />
     </div>
   );

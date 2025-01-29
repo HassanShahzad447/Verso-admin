@@ -43,7 +43,15 @@ const jobApplicationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  jobId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'JobPosting',
+    required: true,
+  },
 }, { timestamps: true });
+
+// Create compound unique index on email and jobId
+jobApplicationSchema.index({ email: 1, jobId: 1 }, { unique: true });
 
 const JobApplication = mongoose.model('JobApplication', jobApplicationSchema);
 

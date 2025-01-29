@@ -7,6 +7,7 @@ const {
   getJobApplicationById,
   updateJobApplication,
   deleteJobApplication,
+  getApplications,
 } = require('../controllers/jobApplicationController');
 
 // Set up multer for file uploads
@@ -15,7 +16,9 @@ const upload = multer({ storage: storage });
 
 router.post('/', upload.single('cv'), createJobApplication);
 
-router.get('/', getAllApplications);
+router.get('/', getApplications);
+
+router.get('/applications', getAllApplications);
 
 router.get('/:id', getJobApplicationById);
 
