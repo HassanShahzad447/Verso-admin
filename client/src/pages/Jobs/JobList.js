@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import parse from 'html-react-parser';
-import { toast, ToastContainer } from 'react-toastify'; 
-import ModalComponent from './Modal'; 
-import 'react-toastify/dist/ReactToastify.css'; 
+import { toast, ToastContainer } from 'react-toastify';
+import ModalComponent from './Modal';
+import { fetchJobs, deleteJob } from '../../services/jobService'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function JobList() {
   const [jobs, setJobs] = useState([]);
@@ -12,34 +13,28 @@ export default function JobList() {
   const [limit] = useState(4);
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [jobToDelete, setJobToDelete] = useState(null); 
+  const [jobToDelete, setJobToDelete] = useState(null);
   const navigate = useNavigate();
-  const backendURL = process.env.REACT_APP_BackendURL;
 
   useEffect(() => {
-    const fetchJobs = async () => {
+    const loadJobs = async () => {
       try {
-        const response = await fetch(`${backendURL}/api/jobs`);
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Fetched jobs:', result);
-          const sortedJobs = result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          setJobs(sortedJobs || []);
-          setTotalPages(Math.ceil(sortedJobs.length / limit));
-        } else {
-          console.error('Failed to fetch jobs:', response.statusText);
-        }
+        const result = await fetchJobs(); // Call JobService to fetch jobs
+        console.log('Fetched jobs:', result);
+        const sortedJobs = result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setJobs(sortedJobs || []);
+        setTotalPages(Math.ceil(sortedJobs.length / limit));
       } catch (error) {
-        console.error('Error fetching jobs:', error);
+        toast.error('Failed to fetch jobs');
       }
     };
-    fetchJobs();
-  }, []);
+    loadJobs();
+  }, [limit]);
 
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
-  const filteredJobs = jobs.filter(job =>
+  const filteredJobs = jobs.filter((job) =>
     job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     job.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -57,37 +52,35 @@ export default function JobList() {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`${backendURL}/api/jobs/${jobToDelete._id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete job');
-      toast.success('Job deleted successfully'); // Display success toast
-      setJobs(prevJobs => prevJobs.filter((job) => job._id !== jobToDelete._id));
-      setShowModal(false); // Close the modal
-    } catch (err) {
-      console.error('Error deleting job:', err.message);
-      toast.error('Failed to delete job'); // Display error toast
+      await deleteJob(jobToDelete._id); // Call JobService to delete the job
+      toast.success('Job deleted successfully');
+      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobToDelete._id));
+      setShowModal(false);
+    } catch (error) {
+      toast.error('Failed to delete job');
     }
   };
 
   return (
     <div>
       <div className="text-center">
-        <div className='p-4 pt-5'>
+        <div className="p-4 pt-5">
           <div className="card shadow">
             <div className="card-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Jobs</h5>
-              <a href="# " onClick={handleAddJob} className="btn btn-primary">Add Job</a>
+              <a href="# " onClick={handleAddJob} className="btn btn-primary">
+                Add Job
+              </a>
             </div>
             <div className="card-body">
               {/* Search Bar */}
               <div className="mb-3">
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Search by title or description..." 
-                  value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)} 
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search by title or description..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ width: '50%' }}
                 />
               </div>
@@ -96,10 +89,10 @@ export default function JobList() {
                   <tr>
                     <th>#</th>
                     <th>Title</th>
+                    <th>Category</th>
                     <th>Last Date to Apply</th>
                     <th>Location</th>
                     <th>Salary Range</th>
-                    <th>Skills</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -109,14 +102,29 @@ export default function JobList() {
                       <tr key={job._id}>
                         <td>{startIndex + index + 1}</td>
                         <td>{job.title || 'N/A'}</td>
+                        <td>
+                          {job.skillsRequirement ? job.skillsRequirement.join(', ') : 'N/A'}
+                        </td>
                         <td>{job.lastDateToApply ? new Date(job.lastDateToApply).toLocaleDateString() : 'N/A'}</td>
                         <td>{job.location || 'N/A'}</td>
-                        <td>{job.salaryRange ? `₨${job.salaryRange.min} - ₨${job.salaryRange.max}` : 'N/A'}</td>
-                        <td>{job.skillsRequirement ? job.skillsRequirement.join(', ') : 'N/A'}</td>
                         <td>
-                          <button onClick={() => navigate(`/update/${job._id}`)} className="view-button">Update</button>
-                          <button 
-                            onClick={() => { setJobToDelete(job); setShowModal(true); }} 
+                          {job.salaryRange
+                            ? `₨${job.salaryRange.min} - ₨${job.salaryRange.max}`
+                            : 'N/A'}
+                        </td>
+                        
+                        <td>
+                          <button
+                            onClick={() => navigate(`/update/${job._id}`)}
+                            className="view-button"
+                          >
+                            Update
+                          </button>
+                          <button
+                            onClick={() => {
+                              setJobToDelete(job);
+                              setShowModal(true);
+                            }}
                             className="view-button"
                           >
                             Delete
@@ -134,13 +142,21 @@ export default function JobList() {
               <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-start">
                   <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))}>
+                    <button
+                      className="page-link"
+                      onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+                    >
                       Previous
                     </button>
                   </li>
-                  <span>Page {page} of {totalPages}</span>
+                  <span>
+                    Page {page} of {totalPages}
+                  </span>
                   <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => setPage(prevPage => (prevPage < totalPages ? prevPage + 1 : prevPage))}>
+                    <button
+                      className="page-link"
+                      onClick={() => setPage((prevPage) => (prevPage < totalPages ? prevPage + 1 : prevPage))}
+                    >
                       Next
                     </button>
                   </li>
@@ -161,7 +177,7 @@ export default function JobList() {
       />
 
       {/* Toast Container */}
-      <ToastContainer /> {/* Add Toastify container here */}
+      <ToastContainer />
     </div>
   );
 }

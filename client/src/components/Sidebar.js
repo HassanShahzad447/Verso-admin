@@ -25,11 +25,11 @@ export default function SideBar() {
     <div className='vh-100'>
       <aside className={`sidebar ${expand && "expand"}`}>
             <div className="d-flex mt-3">
-                <button className="toggle-btn" type="button" onClick={handleExpand}>
-                    <i className="lni lni-grid-alt"></i>
-                </button>
+            <button className="toggle-btn" type="button" onClick={handleExpand}>
+            <img src={`${process.env.PUBLIC_URL}/favicon.ico.png`} alt="Icon" width="30" height="30" />
+            </button>
                 <div className="sidebar-logo">
-                    <a className='link-text' href="#">Verso</a>
+                    <a className='link-text' href="/dashboard">Verso</a>
                 </div>
             </div>
             <ul className="sidebar-nav">
@@ -52,7 +52,7 @@ export default function SideBar() {
                 <li className="sidebar-item">
                 <Link to="/skills"  className="sidebar-link">
                         <i className="lni lni-popup"></i>
-                        <span className='link-text' >Requirments</span>
+                        <span className='link-text' >Categories</span>
                     </Link>
                 </li>
 

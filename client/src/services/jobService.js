@@ -21,7 +21,7 @@ const getJobById = async (jobId) => {
   try {
       const response = await fetch(`${BASE_URL}/api/jobs/${jobId}`);
       const data = await response.json();
-      console.log(data); // Log the data returned from the API
+      console.log(data); 
       if (!response.ok) {
           throw new Error('Failed to fetch job details');
       }
@@ -32,7 +32,6 @@ const getJobById = async (jobId) => {
   }
 };
 
-// Function to update a job posting by ID
 const updateJob = async (jobId, jobData) => {
   try {
       const response = await fetch(`${BASE_URL}/api/jobs/${jobId}`, {
@@ -55,4 +54,29 @@ const updateJob = async (jobId, jobData) => {
   }
 };
 
-export { postJob, getJobById, updateJob };
+const fetchJobs = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/jobs`);
+    if (!response.ok) throw new Error(`Failed to fetch jobs: ${response.statusText}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+    throw error;
+  }
+};
+
+const deleteJob = async (jobId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/api/jobs/${jobId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error(`Failed to delete job: ${response.statusText}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting job:', error);
+    throw error;
+  }
+};
+
+
+export { postJob, getJobById, updateJob, fetchJobs, deleteJob };

@@ -26,20 +26,16 @@ const AddAdmin = () => {
             const result = await Admin(formData, token);
 
 
-            // Check if the response contains _id (indicating success)
             if (result._id) {
-                // Reset form on success
                 setFormData({ name: '', email: '', password: '', role: 'admin' });
 
-                // Show success toast
+            
                 toast.success('Admin added successfully');
 
-                // Redirect to /dashboard after the toast
                 setTimeout(() => {
                     navigate('/dashboard');
-                }, 2000); // 2 seconds delay
+                }, 2000); 
             } else {
-                // If there was an issue, show an error toast
                 toast.error('Failed to add admin. Please try again.');
             }
         } catch (error) {

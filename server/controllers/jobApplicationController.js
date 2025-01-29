@@ -1,5 +1,6 @@
 const JobApplication = require('../models/jobApplicationModel');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const JobPosting = require('../models/JobPosting')
 require('dotenv').config();
 // Configure AWS S3
 const s3 = new S3Client({
@@ -11,7 +12,6 @@ const s3 = new S3Client({
 });
 
 
-// Create a new job application
 const createJobApplication = async (req, res) => {
   try {
     const {
@@ -24,13 +24,28 @@ const createJobApplication = async (req, res) => {
       portfolio,
       yearsOfExperience,
       location,
+      jobId,
     } = req.body;
 
-    // Access the uploaded file (CV)
+    if (!jobId) {
+      return res.status(400).json({ message: 'Job ID is required' });
+    }
+
+    const job = await JobPosting.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: 'Job posting not found' });
+    }
+
     const cv = req.file;
 
     if (!cv) {
       return res.status(400).json({ message: 'CV file is required' });
+    }
+
+    const existingApplication = await JobApplication.findOne({ email, jobId });
+
+    if (existingApplication) {
+      return res.status(400).json({ message: 'You have already applied for this job' });
     }
 
     const newApplication = new JobApplication({
@@ -43,20 +58,20 @@ const createJobApplication = async (req, res) => {
       portfolio,
       yearsOfExperience,
       location,
+      jobId, 
     });
 
-    // Upload CV to S3
     const uploadParams = {
       Bucket: process.env.S3_BUCKET_NAME,
-      Key: `cv/${Date.now()}_${cv.originalname}`, // Unique file name
-      Body: cv.buffer, // File buffer
+      Key: `cv/${Date.now()}_${cv.originalname}`, 
+      Body: cv.buffer, 
       ContentType: cv.mimetype,
     };
 
     try {
       const command = new PutObjectCommand(uploadParams);
       const s3Response = await s3.send(command);
-      newApplication.cv = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`; // Construct the S3 URL
+      newApplication.cv = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`;
     } catch (s3Error) {
       console.error(s3Error);
       return res.status(500).json({ message: 'Error uploading CV to S3', error: s3Error.message });
@@ -70,8 +85,8 @@ const createJobApplication = async (req, res) => {
   }
 };
 
-// Get all job applications
-const getAllApplications = async (req, res) => {
+
+const getApplications = async (req, res) => {
   try {
     const applications = await JobApplication.find().sort({ createdAt: 1 }); // Sort by createdAt in ascending order
     res.status(200).json({ data: applications });
@@ -80,6 +95,32 @@ const getAllApplications = async (req, res) => {
     res.status(500).json({ message: 'Error retrieving applications', error: error.message });
   }
 };
+
+// Get all job applications
+const getAllApplications = async (req, res) => {
+  try {
+    
+    const { jobId } = req.query;
+
+    if (!jobId) {
+      return res.status(400).json({ message: 'Job ID is required' });
+    }
+
+    const applications = await JobApplication.find({ jobId })
+      .sort({ createdAt: 1 }); 
+
+    if (applications.length === 0) {
+      return res.status(404).json({ message: 'No applications found for this job' });
+    }
+
+    res.status(200).json({ data: applications });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving applications', error: error.message });
+  }
+};
+
+
 
 // Get a specific job application by ID
 const getJobApplicationById = async (req, res) => {
@@ -133,4 +174,5 @@ module.exports = {
   getJobApplicationById,
   updateJobApplication,
   deleteJobApplication,
+  getApplications,
 };

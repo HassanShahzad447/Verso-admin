@@ -78,7 +78,6 @@ const Category = () => {
         }
     };
 
-    // Calculate the categories to display based on the current page
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedCategories = categories.slice(startIndex, endIndex);
@@ -89,13 +88,13 @@ const Category = () => {
             <div className="p-4 pt-5">
                 <div className="card shadow">
                     <div className="card-header d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">Requirments</h5>
+                        <h5 className="mb-0">Categories</h5>
                         <button
                             className="btn btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addCategoryModal"
                         >
-                            Add Skill
+                            Add Category
                         </button>
                     </div>
                     <div className="card-body">
@@ -103,7 +102,7 @@ const Category = () => {
                             <thead className="table-dark">
                                 <tr>
                                     <th>#</th>
-                                    <th>Skill</th>
+                                    <th>Category</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

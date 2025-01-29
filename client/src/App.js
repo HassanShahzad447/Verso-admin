@@ -12,6 +12,7 @@ import ApplicationList from './pages/Applications/ApplicationList';
 import AddAdmin from './pages/Auth/AddAdmin';
 import UpdateJob from'./pages/Jobs/UpdateJob';
 import Setting from './pages/Profile/Setting';
+import Applicants from './pages/Applications/Applicants';
 
 const App = () => {
     return (
@@ -94,7 +95,7 @@ const App = () => {
           }
         />
 
-<Route
+    <Route
           path="/profile"
           element={
             <ProtectedRoute>
@@ -105,6 +106,16 @@ const App = () => {
           }
         />
 
+      <Route
+          path="/applicants/:jobId"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Applicants />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
             </Routes>
         </Router>
     );
