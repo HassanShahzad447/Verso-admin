@@ -7,7 +7,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 const AddJob = () => {
   const [jobData, setJobData] = useState({
     title: '',
