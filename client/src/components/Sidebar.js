@@ -44,7 +44,7 @@ export default function SideBar() {
                 <li className="sidebar-item">
                 <Link to="/joblist"  className="sidebar-link">
                         <i className="lni lni-agenda"></i>
-                        <span className='link-text'>Job</span>
+                        <span className='link-text'>Jobs</span>
                     </Link>
                 </li>
 
@@ -98,7 +98,7 @@ export default function SideBar() {
             <li className="sidebar-item">
                 <Link to="/ApplicationList"  className="sidebar-link">
                         <i className="lni lni-book"></i>
-                        <span className='link-text' >ApplicationList</span>
+                        <span className='link-text' >Applications</span>
                     </Link>
                 </li>
                 

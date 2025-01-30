@@ -25,11 +25,9 @@ const AddAdmin = () => {
         try {
             const result = await Admin(formData, token);
 
-
             if (result._id) {
                 setFormData({ name: '', email: '', password: '', role: 'admin' });
 
-            
                 toast.success('Admin added successfully');
 
                 setTimeout(() => {
@@ -44,59 +42,60 @@ const AddAdmin = () => {
         }
     };
 
-    
-    
-
     return (
-        <div className="text-center">
+        <div className="container py-5">
             {/* ToastContainer outside any conditional rendering */}
             <ToastContainer />
 
-            <div className="p-4 pt-5">
-                <div className="card shadow">
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                        <h5 className="mb-0">Add Admin</h5>
-                    </div>
-                    <div className="card-body">
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-3 text-start">
-                                <label htmlFor="name" className="form-label">Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Enter admin name"
-                                />
-                            </div>
-                            <div className="mb-3 text-start">
-                                <label htmlFor="email" className="form-label">Email</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter admin email"
-                                />
-                            </div>
-                            <div className="mb-3 text-start">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    placeholder="Enter password"
-                                />
-                            </div>
-                            <button type="submit" className="btn btn-dark w-100">Add Admin</button>
-                        </form>
+            <div className="row justify-content-center">
+                <div className="col-lg-6 col-md-8 col-12">
+                    <div className="card shadow-lg border-0 rounded-3">
+                        <div className="card-header text-white text-center rounded-top"  style={{ backgroundColor: '#212529' }}>
+                            <h5 className="mb-0">Add Admin</h5>
+                        </div>
+                        <div className="card-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4">
+                                    <label htmlFor="name" className="form-label">Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="Enter admin name"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="email" className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="Enter admin email"
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="password" className="form-label">Password</label>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="Enter password"
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary w-100 py-2 rounded-pill" style={{ backgroundColor: '#212529', borderColor:'#212529' }}>
+                                    Add Admin
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
