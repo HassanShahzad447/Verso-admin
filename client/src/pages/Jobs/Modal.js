@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 const ModalComponent = ({ show, onHide, onConfirm, title, message }) => {
   return (
     <div className={`modal fade ${show ? 'show' : ''}`} style={{ display: show ? 'block' : 'none' }} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
