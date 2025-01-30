@@ -3,8 +3,7 @@ import { useParams } from 'react-router-dom';
 import { fetchApplicants } from '../../services/ApplicationService';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ApplicantDetailsModal from './ApplicantDetailsModal'; // Import the modal component
-
+import ApplicantDetailsModal from './ApplicantDetailsModal'; 
 const Applicants = () => {
   const { jobId } = useParams(); // Get the jobId from the URL
   const [applicants, setApplicants] = useState([]);
@@ -13,7 +12,6 @@ const Applicants = () => {
   const [limit] = useState(4);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedApplicant, setSelectedApplicant] = useState(null); // Store selected applicant for modal
-
   useEffect(() => {
     const loadApplicants = async () => {
       try {
@@ -28,12 +26,9 @@ const Applicants = () => {
     };
     loadApplicants();
   }, [jobId, limit]);
-
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
-
   const paginatedApplicants = applicants.slice(startIndex, endIndex);
-
   if (loading) {
     return <p>Loading applicants...</p>;
   }
@@ -43,24 +38,22 @@ const Applicants = () => {
   };
 
   const handleCloseModal = () => {
-    setSelectedApplicant(null); // Close the modal
+    setSelectedApplicant(null); 
   };
 
-  // Prevent opening the modal when the action buttons are clicked
   const handleActionClick = (e) => {
-    e.stopPropagation(); // Stop event from bubbling up to row
+    e.stopPropagation(); 
   };
-
   return (
     <div className="container mt-4">
       <ToastContainer />
       <div className="p-4 pt-5">
-        <div className="card shadow">
-          <div className="card-header d-flex justify-content-between align-items-center">
+        <div className="card shadow-lg rounded-lg border-0">
+          <div className="card-header d-flex justify-content-between align-items-center text-white rounded-top" style={{ backgroundColor: '#212529' }}>
             <h5 className="mb-0">Applicants for the job</h5>
           </div>
           <div className="card-body">
-            <table className="table">
+            <table className="table table-striped">
               <thead className="table-dark">
                 <tr>
                   <th>#</th>
@@ -77,7 +70,7 @@ const Applicants = () => {
                   paginatedApplicants.map((applicant, index) => (
                     <tr
                       key={applicant._id}
-                      onClick={() => handleApplicantClick(applicant)} // Open modal on row click
+                      onClick={() => handleApplicantClick(applicant)} 
                       style={{ cursor: 'pointer' }}
                     >
                       <td>{startIndex + index + 1}</td>
@@ -89,8 +82,10 @@ const Applicants = () => {
                       <td>
                         {/* CV Button without triggering modal */}
                         <a href={applicant.cv} target="_blank" rel="noopener noreferrer">
-                          <button className="btn btn-dark btn-sm" onClick={handleActionClick}>
-                            VIEW CV
+                          <button className="btn btn-primary btn-sm" 
+                          style={{ backgroundColor: '#212529',borderColor:'#212529' }}
+                          onClick={handleActionClick}>
+                            View CV
                           </button>
                         </a>
                       </td>
@@ -103,41 +98,70 @@ const Applicants = () => {
                 )}
               </tbody>
             </table>
-
-            {/* Pagination */}
             <nav aria-label="Page navigation example">
-              <ul className="pagination justify-content-start">
-                <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))}
-                    disabled={page === 1}
-                  >
-                    Previous
-                  </button>
-                </li>
-                <span>
+                            <ul className="pagination justify-content-center">
+                                <li 
+                                    className={`page-item ${page === 1 ? 'disabled' : ''}`}
+                                    style={{ margin: '0 10px', cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+                                >
+                                    <button
+                                        className="page-link"
+                                        onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))}
+                                        disabled={page === 1}
+                                        style={{
+                                            backgroundColor: '#212529',
+                                            borderColor: '',
+                                            color: '#fff',
+                                            transition: 'background-color 0.3s ease',
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+                                    >
+                                        <i className="fas fa-arrow-left"></i> 
+                                    </button>
+                                </li>
+                                <li className="page-item" style={{ margin: '0 10px' }}>
+                <span
+                  className="page-link page-indicator"
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: '#212529',
+                    transition: 'color 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = '#0056b3'}
+                  onMouseLeave={(e) => e.target.style.color = '#007bff'}
+                >
                   Page {page} of {totalPages}
                 </span>
-                <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => setPage(prevPage => (prevPage < totalPages ? prevPage + 1 : prevPage))}
-                    disabled={page === totalPages}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
+              </li>
+                                <li 
+                                    className={`page-item ${page === totalPages ? 'disabled' : ''}`}
+                                    style={{ margin: '0 10px', cursor: page === totalPages ? 'not-allowed' : 'pointer' }}
+                                >
+                                    <button
+                                        className="page-link"
+                                        onClick={() => setPage(prevPage => (prevPage < totalPages ? prevPage + 1 : prevPage))}
+                                        disabled={page === totalPages}
+                                        style={{
+                                            backgroundColor: '#212529',
+                                            borderColor: '#212529',
+                                            color: '#fff',
+                                            transition: 'background-color 0.3s ease',
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#0056b3'}
+                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#007bff'}
+                                    >
+                                        <i className="fas fa-arrow-right"></i> 
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
           </div>
         </div>
       </div>
-
-      {/* Render the modal component */}
       {selectedApplicant && <ApplicantDetailsModal applicant={selectedApplicant} onClose={handleCloseModal} />}
     </div>
   );
 };
-
 export default Applicants;
